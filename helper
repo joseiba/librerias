@@ -1,0 +1,28 @@
+const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(xmlString, 'text/xml');
+    const modulusElement = xmlDoc.getElementsByTagName('Modulus')[0];
+    const exponentElement = xmlDoc.getElementsByTagName('Exponent')[0];
+    
+    // Verificar que los elementos existan y tengan contenido
+    const modulus = modulusElement ? modulusElement.textContent ?? '' : '';
+    const exponent = exponentElement ? exponentElement.textContent ?? '' : '';
+    
+    // Crear clave pública RSA
+    const publicKey: rsasign.RSAKey = rsasign.KEYUTIL.getKey({
+      n: rsasign.b64tohex(modulus),
+      e: rsasign.b64tohex(exponent),
+  }) as rsasign.RSAKey;
+    
+    // Datos a encriptar
+    
+    // Algoritmo de encriptación (puedes usar 'RSA' u otro según la documentación de jsrsasign)
+    const algorithm = 'RSA';
+    
+    // Encriptar con clave pública RSA
+    const encryptedData = rsasign.KJUR.crypto.Cipher.encrypt(dataToEncrypt, publicKey, algorithm);
+    
+    // Convertir a Base64 de 512 bits
+    const encryptedBase64 = rsasign.hextob64(encryptedData);
+    const truncatedBase64 = encryptedBase64.substr(0, 512);
+    
+    console.log('Encriptado RSA:', truncatedBase64);
